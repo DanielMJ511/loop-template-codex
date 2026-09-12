@@ -1,5 +1,79 @@
 # Loop template
 
+This repository adds **Codex support alongside Claude Code**. It preserves the
+history and unchanged Claude machinery from
+[DanielMJ511/loop-template](https://github.com/DanielMJ511/loop-template), starting
+at `043796e9405968d79257f0c66997395fda8ff9d3`.
+
+## Use with Codex (Linux / WSL)
+
+From this template checkout, install into the root of an existing Git project:
+
+```sh
+python3 scripts/install-codex.py /path/to/your/project --dry-run
+python3 scripts/install-codex.py /path/to/your/project
+```
+
+Requires Python 3.11+, Git and POSIX `sh`. The installer checks all file collisions
+before writing, preserves existing loop state, and merges hook entries without
+replacing unrelated hooks or `config.toml`. Identical files are safe to reinstall;
+different files are reported as conflicts for review. It installs both integrations,
+since Codex reuses the original role instructions, templates and shell hooks.
+
+Start Codex in the adopting project:
+
+```sh
+codex --approve-for-me
+```
+
+**Codex CLI 0.154.0 rejects combining `--sandbox workspace-write` with
+`--approve-for-me`.** The latter already selects workspace-write with automatic
+approval review, so the command above implements that permission choice.
+
+Trust the project, then use `/hooks` to review and trust the four **Loop** hooks.
+Do not trust unrelated hooks just to finish setup. Verify the eight custom agents
+are loaded. Invoke skills with `$` or the `/skills` selector:
+
+```text
+$loop-init       detect the project and prepare its profile
+$loop-plan       discuss and write the next unit's task packets
+$orchestrate     build → test → verify → review → record
+$retro           record lessons from a completed unit
+$loop-handoff    checkpoint before switching sessions or tools
+```
+
+The main session keeps your selected model and effort. Child roles use these
+defaults, editable in their `.codex/agents/*.toml` definitions:
+
+| Roles | Model | Effort |
+|---|---|---|
+| Builder, verifier, code reviewer | `gpt-5.6-sol` | medium |
+| Test runner | `gpt-5.6-luna` | low |
+| Docs writer | `gpt-5.6-sol` | low |
+| Implementer, security auditor | `gpt-6-astra` | high |
+| Teacher | inherited | inherited |
+
+An unavailable model is reported as a blocker, not silently replaced. Claude and
+Codex share `loop/`, so stop one before running the other. The initialization skill
+preserves earned lessons and journals on re-detection. No global settings are
+modified by installation.
+
+See [Codex integration details](.codex/LOOP.md) for hook activation, session
+ownership and the local footprint, and [validation evidence](docs/codex-validation.md)
+for what has actually been tested. Native Windows Codex support is deferred;
+the existing Claude Windows scripts remain unchanged.
+
+Run the added regression tests with:
+
+```sh
+python3 -m unittest discover -s tests/codex -v
+```
+
+The remainder of this README documents the original **Claude Code** workflow.
+Its slash commands, model names and frontmatter hook registration refer to Claude.
+
+---
+
 An agent build loop that adapts itself to a project. Copy it in, run `/loop-init`, start looping.
 
 Extracted from a real project where it drove nine milestones. Across four of them it escalated to

@@ -1,0 +1,56 @@
+{
+  "description": "Loop template Codex lifecycle adapters",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "timeout": 30,
+            "statusMessage": "Loop: PreToolUse"
+          }
+        ],
+        "matcher": "^Bash$"
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "timeout": 30,
+            "statusMessage": "Loop: SubagentStop"
+          }
+        ],
+        "matcher": "^(builder|implementer|test-runner|verifier|code-reviewer|docs-writer|security-auditor)$"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "timeout": 30,
+            "statusMessage": "Loop: Stop"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "timeout": 30,
+            "statusMessage": "Loop: PreCompact"
+          }
+        ],
+        "matcher": "^(manual|auto)$"
+      }
+    ]
+  }
+}

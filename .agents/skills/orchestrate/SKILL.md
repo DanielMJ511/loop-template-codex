@@ -1,0 +1,16 @@
+---
+name: orchestrate
+description: Execute an approved loop plan through delegated build, test, verification, review and recording stages. Use when the user asks to implement the next planned loop tasks.
+---
+
+Read [Codex integration rules](../../../.codex/LOOP.md), then the Markdown body of the [existing orchestrate workflow](../../../.claude/skills/orchestrate/SKILL.md). Both are required: the existing workflow supplies the tested stage behavior; this entrypoint adapts the harness. Ignore the source YAML frontmatter. The integration rules and substitutions below take precedence over harness-specific source text. User instructions and existing authorization take precedence over template approval checkpoints.
+
+Run the source workflow in the main session, with these Codex integration steps:
+1. Read `.codex/LOOP.md`, the profile and planned tasks before invoking agents. In Plan mode, report that execution requires leaving Plan mode; do not activate or spawn builders.
+2. Confirm the eight named Codex agents are loaded and their configured models available. Activate this session with the standalone command in `.codex/LOOP.md`. A failed activation or unavailable hook/model blocks orchestration; never emulate an audit entry.
+3. Replace the source's frontmatter registration section with the installed Codex hook behavior. Explicitly spawn each named agent using its Codex custom-agent type. This skill authorizes delegation for these stages. Pass only the specified task, profile floor, lesson slices, prior findings and absolute project path. Wait for the report and verify its task and verdict before the next spawn. If a close tool is exposed, close the completed agent; otherwise leave it completed and proceed (some Codex runtimes manage finished agents automatically). Absence of a close tool is not a capability blocker. Use the live agent list to distinguish a running agent from a completed one; do not interrupt completed agents just to emulate closing. Never silently substitute a generic agent or implement feature code in the parent.
+4. Preserve every source routing and gate rule. A prerequisite failure spends no retry; zero tests are not a pass. An unavailable agent/model is a capability blocker, not a code failure. Keep a promoted direct task on the full route on resume even though its original `Route:` remains `direct`.
+5. Packet `Status:` is authoritative for the retry counter, even if a handoff disagrees. Keep fields on separate lines. Inspect the actual diff before trusting a checkpoint. Read recent audit evidence on resume; an existing log alone is not evidence that hooks are currently enabled.
+6. At task and unit boundaries, verify expected completed agents produced audit records. If not, stop with the missing telemetry identified. Do not mark a gate passed from an agent's intention to run it.
+7. Keep the source's scoped index recipe and commit policy. Do not run a blanket reset, stash or restore. No model may bypass a denied command or relax the launch permissions.
+8. Before returning deliberately mid-unit, use `$loop-handoff`; on a completed/blocked run preserve durable status. Run the standalone deactivate command when leaving orchestration. If interrupted before this, explicit resume will reuse the durable state.
