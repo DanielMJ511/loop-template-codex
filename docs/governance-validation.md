@@ -7,7 +7,9 @@ evidence, changed identity, unresolved gaps, absent approvals, unit and configur
 binding, API outages, solo/team review rules, classic and ruleset protection, and
 publication checks on HEAD. CI runner regressions reject skipped twins, empty
 suites and failed runners. Existing hook-recovery and installer cases remain in
-its suite. The final measured counts and hosted run are recorded below after CI.
+its suite. 59 Python tests passed locally on Python 3.14.7. Both new skills passed the
+skill-creator validator; CI YAML parsed and action references are pinned. Hosted
+Python 3.11/3.14 and shell-twin execution remains pending.
 
 An independent skill forward-test used disposable repositories. It confirmed
 that an existing project with no record blocks, user-approved local-only exceptions
@@ -17,7 +19,9 @@ scenarios, not evidence of an external human approving a GitHub PR.
 
 ## Hosted acceptance
 
-Pending bootstrap CI and branch-protection adoption. Do not treat this section as
+Pending bootstrap CI and branch-protection adoption. GitHub rejected the initial
+branch push because the existing OAuth token lacks workflow scope; no PR or
+remote governance changes were created by that attempt. Do not treat this section as
 a successful hosted verification until the observed run and settings are recorded.
 
 ## Limits

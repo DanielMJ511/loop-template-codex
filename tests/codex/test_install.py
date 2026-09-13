@@ -30,7 +30,7 @@ class Install(unittest.TestCase):
                 if path.is_file() and ".git" not in path.relative_to(self.root).parts}
 
     def test_install_and_reinstall_preserve_state(self):
-        for name in ("PROFILE.md", "LESSONS.md", "STATE.md", "PLAN.md", "HANDOFF.md", "AUDIT.log", "tasks/T-001.md"):
+        for name in ("PROFILE.md", "LESSONS.md", "STATE.md", "PLAN.md", "HANDOFF.md", "AUDIT.log", "GOVERNANCE.json", "GOVERNANCE.md", "tasks/T-001.md"):
             self.write("loop/" + name, "earned state: " + name)
         self.write(".codex/config.toml", 'model = "existing-model"\n')
         installer.install(self.root)
@@ -39,6 +39,13 @@ class Install(unittest.TestCase):
         self.assertEqual(self.snapshot(), first)
         self.assertEqual((self.root / "loop/LESSONS.md").read_text(), "earned state: LESSONS.md")
         self.assertEqual((self.root / ".codex/config.toml").read_text(), 'model = "existing-model"\n')
+
+    def test_governance_resources_install_without_bytecode(self):
+        installer.install(self.root)
+        self.assertTrue((self.root / ".claude/skills/loop-governance/scripts/governance.py").is_file())
+        self.assertTrue((self.root / ".agents/skills/loop-governance/SKILL.md").is_file())
+        self.assertFalse(any("__pycache__" in p.parts for p in self.root.rglob("*")))
+        self.assertFalse((self.root / "loop/GOVERNANCE.json").exists())
 
     def test_customization_collision_writes_nothing(self):
         self.write(".agents/skills/retro/SKILL.md", "project-specific retro")

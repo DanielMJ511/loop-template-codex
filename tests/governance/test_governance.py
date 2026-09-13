@@ -48,6 +48,11 @@ class Governance(unittest.TestCase):
     def check(self, **kwargs):
         return g.check(self.root, api=lambda endpoint: self.responses[endpoint], **kwargs)
 
+    def test_profile_required_even_after_seal(self):
+        (self.root / 'loop/PROFILE.md').unlink()
+        self.save()
+        self.assertTrue(self.check())
+
     def test_verified_solo_passes(self):
         self.assertEqual(self.check(), [])
 
