@@ -592,3 +592,20 @@ about, and it's worse than an honest gap because it closes the question.
 own Playwright — their specs *are* the test suite, so `test-runner` already runs them — and it would
 depend on an install the template can't perform. Detection adapts to whichever harness you chose;
 bundling would pick one for you.
+
+### Recoverable Codex hooks and branch changes
+
+Before switching an active Codex checkout, run
+`python3 scripts/check-codex-branch.py TARGET` and review hook changes. If the
+required files are absent in that revision, use a separate worktree. Adopting
+projects should include this rule in their own `AGENTS.md`; the installer does
+not replace that file.
+
+The registered launcher survives removal of the adapter: lifecycle hooks warn
+without requesting another assistant turn, while shell checks deny commands
+when unavailable. To migrate an existing installation's exact legacy hook
+registrations, run
+`python3 scripts/install-codex.py PROJECT --migrate-hooks --dry-run`, then the same
+command without `--dry-run`. Customized definitions
+remain conflicts and unrelated hooks are preserved. Review the updated
+registrations in `/hooks`. See [recovery validation](docs/hook-recovery-validation.md).

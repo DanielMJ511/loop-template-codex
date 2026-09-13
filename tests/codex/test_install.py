@@ -64,6 +64,41 @@ class Install(unittest.TestCase):
             installer.install(self.root)
         self.assertEqual(self.snapshot(), before)
 
+    def test_exact_legacy_hook_migration(self):
+        legacy = json.loads((ROOT / ".codex/hooks.json").read_text())
+        for entries in legacy["hooks"].values():
+            entries[0]["hooks"][0]["command"] = 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/loop.py"'
+        unrelated = {"hooks": [{"type": "command", "command": "echo unrelated"}]}
+        legacy["hooks"]["Stop"].append(unrelated)
+        self.write(".codex/hooks.json", json.dumps(legacy))
+        before = self.snapshot()
+        installer.migrate_hooks(self.root, dry_run=True)
+        self.assertEqual(before, self.snapshot())
+        installer.migrate_hooks(self.root)
+        result = json.loads((self.root / ".codex/hooks.json").read_text())
+        self.assertEqual(len(result["hooks"]["Stop"]), 2)
+        self.assertIn(unrelated, result["hooks"]["Stop"])
+        self.assertEqual(json.loads((self.root / ".codex/hooks.json.before-recovery").read_text()), legacy)
+        after = self.snapshot()
+        installer.migrate_hooks(self.root)
+        self.assertEqual(after, self.snapshot())
+
+    def test_custom_hook_migration_writes_nothing(self):
+        self.write(".codex/hooks.json", json.dumps({"hooks": {"Stop": [{"hooks": [{"command": "custom .codex/hooks/loop.py"}]}]}}))
+        before = self.snapshot()
+        with self.assertRaisesRegex(ValueError, "Conflicting existing loop hook"):
+            installer.migrate_hooks(self.root)
+        self.assertEqual(before, self.snapshot())
+
+    def test_migration_rejects_custom_hook_beside_recognized_hook(self):
+        current = json.loads((ROOT / ".codex/hooks.json").read_text())
+        current["hooks"]["Stop"].append({"hooks": [{"command": "custom .codex/hooks/loop.py"}]})
+        self.write(".codex/hooks.json", json.dumps(current))
+        before = self.snapshot()
+        with self.assertRaisesRegex(ValueError, "Conflicting existing loop hook"):
+            installer.migrate_hooks(self.root)
+        self.assertEqual(before, self.snapshot())
+
     def test_symlink_parent_rejected(self):
         (self.root / "outside").mkdir()
         (self.root / ".codex").symlink_to(self.root / "outside", target_is_directory=True)

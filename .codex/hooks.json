@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "command": "python3 -c 'import json, subprocess, sys\nfallback = {'\"'\"'hookSpecificOutput'\"'\"': {'\"'\"'hookEventName'\"'\"': '\"'\"'PreToolUse'\"'\"', '\"'\"'permissionDecision'\"'\"': '\"'\"'deny'\"'\"', '\"'\"'permissionDecisionReason'\"'\"': '\"'\"'Loop hook unavailable; restore the adapter from an external terminal before running commands.'\"'\"'}}\ntry:\n    root = subprocess.run(['\"'\"'git'\"'\"', '\"'\"'rev-parse'\"'\"', '\"'\"'--show-toplevel'\"'\"'], capture_output=True, text=True, check=True, timeout=5).stdout.strip()\n    result = subprocess.run([sys.executable, root + '\"'\"'/.codex/hooks/loop.py'\"'\"'], input=sys.stdin.read(), capture_output=True, text=True, timeout=20)\n    if result.returncode:\n        raise ValueError('\"'\"'adapter failed'\"'\"')\n    value = json.loads(result.stdout)\n    if not isinstance(value, dict):\n        raise ValueError('\"'\"'invalid output'\"'\"')\n    if '\"'\"'PreToolUse'\"'\"' != '\"'\"'PreToolUse'\"'\"' and any(k != '\"'\"'systemMessage'\"'\"' for k in value):\n        raise ValueError('\"'\"'advisory event returned control fields'\"'\"')\nexcept Exception:\n    value = fallback\nprint(json.dumps(value))\n' 2>/dev/null || printf '%s\\n' '{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"Loop hook unavailable; restore the adapter from an external terminal before running commands.\"}}'",
             "timeout": 30,
             "statusMessage": "Loop: PreToolUse"
           }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "command": "python3 -c 'import json, subprocess, sys\nfallback = {'\"'\"'systemMessage'\"'\"': '\"'\"'Loop SubagentStop hook unavailable; restore the adapter from an external terminal. No lifecycle evidence was recorded.'\"'\"'}\ntry:\n    root = subprocess.run(['\"'\"'git'\"'\"', '\"'\"'rev-parse'\"'\"', '\"'\"'--show-toplevel'\"'\"'], capture_output=True, text=True, check=True, timeout=5).stdout.strip()\n    result = subprocess.run([sys.executable, root + '\"'\"'/.codex/hooks/loop.py'\"'\"'], input=sys.stdin.read(), capture_output=True, text=True, timeout=20)\n    if result.returncode:\n        raise ValueError('\"'\"'adapter failed'\"'\"')\n    value = json.loads(result.stdout)\n    if not isinstance(value, dict):\n        raise ValueError('\"'\"'invalid output'\"'\"')\n    if '\"'\"'SubagentStop'\"'\"' != '\"'\"'PreToolUse'\"'\"' and any(k != '\"'\"'systemMessage'\"'\"' for k in value):\n        raise ValueError('\"'\"'advisory event returned control fields'\"'\"')\nexcept Exception:\n    value = fallback\nprint(json.dumps(value))\n' 2>/dev/null || printf '%s\\n' '{\"systemMessage\": \"Loop SubagentStop hook unavailable; restore the adapter from an external terminal. No lifecycle evidence was recorded.\"}'",
             "timeout": 30,
             "statusMessage": "Loop: SubagentStop"
           }
@@ -32,7 +32,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "command": "python3 -c 'import json, subprocess, sys\nfallback = {'\"'\"'systemMessage'\"'\"': '\"'\"'Loop Stop hook unavailable; restore the adapter from an external terminal. No lifecycle evidence was recorded.'\"'\"'}\ntry:\n    root = subprocess.run(['\"'\"'git'\"'\"', '\"'\"'rev-parse'\"'\"', '\"'\"'--show-toplevel'\"'\"'], capture_output=True, text=True, check=True, timeout=5).stdout.strip()\n    result = subprocess.run([sys.executable, root + '\"'\"'/.codex/hooks/loop.py'\"'\"'], input=sys.stdin.read(), capture_output=True, text=True, timeout=20)\n    if result.returncode:\n        raise ValueError('\"'\"'adapter failed'\"'\"')\n    value = json.loads(result.stdout)\n    if not isinstance(value, dict):\n        raise ValueError('\"'\"'invalid output'\"'\"')\n    if '\"'\"'Stop'\"'\"' != '\"'\"'PreToolUse'\"'\"' and any(k != '\"'\"'systemMessage'\"'\"' for k in value):\n        raise ValueError('\"'\"'advisory event returned control fields'\"'\"')\nexcept Exception:\n    value = fallback\nprint(json.dumps(value))\n' 2>/dev/null || printf '%s\\n' '{\"systemMessage\": \"Loop Stop hook unavailable; restore the adapter from an external terminal. No lifecycle evidence was recorded.\"}'",
             "timeout": 30,
             "statusMessage": "Loop: Stop"
           }
@@ -44,7 +44,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/loop.py\"",
+            "command": "python3 -c 'import json, subprocess, sys\nfallback = {'\"'\"'systemMessage'\"'\"': '\"'\"'Loop PreCompact hook unavailable; restore the adapter from an external terminal. No lifecycle evidence was recorded.'\"'\"'}\ntry:\n    root = subprocess.run(['\"'\"'git'\"'\"', '\"'\"'rev-parse'\"'\"', '\"'\"'--show-toplevel'\"'\"'], capture_output=True, text=True, check=True, timeout=5).stdout.strip()\n    result = subprocess.run([sys.executable, root + '\"'\"'/.codex/hooks/loop.py'\"'\"'], input=sys.stdin.read(), capture_output=True, text=True, timeout=20)\n    if result.returncode:\n        raise ValueError('\"'\"'adapter failed'\"'\"')\n    value = json.loads(result.stdout)\n    if not isinstance(value, dict):\n        raise ValueError('\"'\"'invalid output'\"'\"')\n    if '\"'\"'PreCompact'\"'\"' != '\"'\"'PreToolUse'\"'\"' and any(k != '\"'\"'systemMessage'\"'\"' for k in value):\n        raise ValueError('\"'\"'advisory event returned control fields'\"'\"')\nexcept Exception:\n    value = fallback\nprint(json.dumps(value))\n' 2>/dev/null || printf '%s\\n' '{\"systemMessage\": \"Loop PreCompact hook unavailable; restore the adapter from an external terminal. No lifecycle evidence was recorded.\"}'",
             "timeout": 30,
             "statusMessage": "Loop: PreCompact"
           }

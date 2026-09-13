@@ -113,3 +113,24 @@ Reinitialization must preserve journal, earned lessons, packets and handoff.
 - https://learn.chatgpt.com/docs/build-skills
 - https://learn.chatgpt.com/docs/agent-configuration/subagents
 - https://learn.chatgpt.com/docs/hooks
+
+## Branch transitions and hook recovery
+
+Before switching or checking out another revision in an active Codex checkout,
+run `python3 scripts/check-codex-branch.py TARGET` (or inspect the complete required
+file set in the target commit if the helper is unavailable). Required files are
+`.codex/hooks.json`, `.codex/hooks/loop.py`, and the four `.claude/hooks/` scripts:
+`guard-git-destructive.sh`, `audit-subagent.sh`, `loop-guard.sh`, and
+`precompact-checkpoint.sh`. Resolve ambiguous
+checkout arguments first. A missing dependency means use a separate worktree;
+do not remove the current session's hook files. Review hook changes even when
+all files exist. This is a workflow preflight, not enforcement on external Git clients.
+
+Registered commands contain their own fallback so deleting the adapter cannot
+turn Python's exit 2 into a Stop continuation request. Lifecycle failures warn
+without requesting continuation; shell checks deny when the adapter cannot run.
+Restore missing files from an external terminal. Do not disable safety checks.
+Changed hook definitions require review/trust through `/hooks` before live testing.
+For existing installations, `scripts/install-codex.py DEST --migrate-hooks` updates
+only exact legacy hook registrations, preserving unrelated hooks and customized
+conflicts. Inspect the dry run first. It does not upgrade customized adapter files.

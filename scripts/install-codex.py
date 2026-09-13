@@ -15,7 +15,7 @@ def source_files():
     paths = list((SOURCE / ".claude").rglob("*"))
     paths += list((SOURCE / ".agents/skills").rglob("SKILL.md"))
     paths += list((SOURCE / ".codex/agents").glob("*.toml"))
-    paths += [SOURCE / ".codex/LOOP.md", SOURCE / ".codex/hooks/loop.py"]
+    paths += [SOURCE / ".codex/LOOP.md", SOURCE / ".codex/hooks/loop.py", SOURCE / "scripts/check-codex-branch.py"]
     return sorted(path for path in paths if path.is_file())
 
 
@@ -30,7 +30,7 @@ def check_path(destination, relative):
     return path
 
 
-def merged_hooks(destination):
+def merged_hooks(destination, migrate=False):
     path = check_path(destination, Path(".codex/hooks.json"))
     wanted = json.loads((SOURCE / ".codex/hooks.json").read_text())
     current = json.loads(path.read_text()) if path.exists() else {"hooks": {}}
@@ -45,7 +45,18 @@ def merged_hooks(destination):
         if not isinstance(existing, list):
             raise ValueError(f"Existing {event} hooks are not an array")
         for entry in entries:
+            legacy = json.loads(json.dumps(entry))
+            legacy["hooks"][0]["command"] = 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/loop.py"'
+            recognized = [entry, legacy] if migrate else [entry]
+            if any(".codex/hooks/loop.py" in json.dumps(item) and item not in recognized
+                   for item in existing):
+                raise ValueError(f"Conflicting existing loop hook for {event}")
             if entry in existing:
+                if migrate:
+                    existing[:] = [item for item in existing if item != legacy]
+                continue
+            if migrate and legacy in existing:
+                existing[existing.index(legacy)] = entry
                 continue
             if any(".codex/hooks/loop.py" in json.dumps(item) for item in existing):
                 raise ValueError(f"Conflicting existing loop hook for {event}")
@@ -103,13 +114,35 @@ def install(destination, dry_run=False):
     print("No loop state or global settings were changed. Re-run with --dry-run to check collisions.")
 
 
+def migrate_hooks(destination, dry_run=False):
+    destination = destination.resolve()
+    actual = subprocess.run(["git", "-C", str(destination), "rev-parse", "--show-toplevel"],
+                            capture_output=True, text=True, check=True)
+    if Path(actual.stdout.strip()).resolve() != destination:
+        raise ValueError("Destination must be the repository root")
+    path, data = merged_hooks(destination, migrate=True)
+    backup = check_path(destination, Path(".codex/hooks.json.before-recovery"))
+    if backup.exists() and not backup.is_file():
+        raise ValueError("Expected a regular backup file")
+    if path.exists() and path.read_bytes() == data:
+        print("Hooks already current")
+        return
+    print("Would migrate hooks" if dry_run else "Migrating hooks; review/trust in /hooks before use")
+    if not dry_run:
+        if path.exists() and not backup.exists():
+            shutil.copy2(path, backup)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("destination", type=Path)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--migrate-hooks", action="store_true", help="Migrate exact legacy hook definitions only")
     args = parser.parse_args()
     try:
-        install(args.destination, args.dry_run)
+        (migrate_hooks if args.migrate_hooks else install)(args.destination, args.dry_run)
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         sys.exit(str(error))
 
