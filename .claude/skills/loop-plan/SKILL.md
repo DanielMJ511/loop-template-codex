@@ -265,3 +265,9 @@ Append to `loop/STATE.md`:
 ```
 
 Stop. **Write no application code.** Tell the user to review `loop/PLAN.md` and any new decision records, then run `/orchestrate`.
+
+
+Planning is allowed while governance is pending. Read loop/GOVERNANCE.json if
+present and surface unresolved controls in the plan; do not label the plan ready
+for implementation until loop-governance's executable check succeeds. Do not
+create approvals or repair governance implicitly as part of task planning.

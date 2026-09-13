@@ -12,3 +12,13 @@ Follow the source workflow with these substitutions:
 - Always exclude `loop/.codex-session.json` and `loop/AUDIT.log` from commits.
 - Preserve pre-existing `loop/` files even on partial adoption: create missing initial files, never reseed existing lessons or replace a journal. Re-detection changes the profile and appends its journal entry only.
 - At the end, run the standalone doctor command from `.codex/LOOP.md` inside Codex to confirm the PreToolUse hook actually fires. Missing hook trust is an incomplete setup, not success.
+
+
+## Required next workflow
+
+Require Python 3.11+ for the governance validator in both integrations. After
+initialization, the next required step is loop-governance, not implementation.
+If loop/GOVERNANCE.json is absent, report governance pending; never assume older
+installations are exempt. Preserve existing governance records and summaries on
+re-detection. Changed profile/workflow evidence requires reassessment. Planning
+remains available, but orchestration and publication require the executable gate.

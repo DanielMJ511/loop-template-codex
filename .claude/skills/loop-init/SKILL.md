@@ -341,7 +341,7 @@ Then tell the user to check `loop/AUDIT.log` has content after their first `/orc
 
 ## 8. Stop
 
-**On first adoption**, report: the mode, the stack, the work-item source, anything you could not determine, and any command that failed verification. Tell the user to skim `loop/PROFILE.md` — particularly the conventions section, since that is what shapes every line of code the loop writes — and then run `/loop-plan` when ready.
+**On first adoption**, report: the mode, the stack, the work-item source, anything you could not determine, and any command that failed verification. Tell the user to skim `loop/PROFILE.md` — particularly the conventions section, since that is what shapes every line of code the loop writes — and then run `/loop-governance` to complete the required implementation gate. Planning remains available while governance is pending.
 
 **On re-detection**, report something different, because the file is not new:
 
@@ -353,3 +353,13 @@ Then tell the user to check `loop/AUDIT.log` has content after their first `/orc
 Then tell them to re-read the changed fields specifically, and to consider whether an in-flight unit needs re-planning before `/orchestrate` continues.
 
 Do not continue into planning, even if the user's original request was to start building. The profile is a checkpoint worth a human glance precisely because everything downstream depends on it.
+
+
+## Required next workflow
+
+Require Python 3.11+ for the governance validator in both integrations. After
+initialization, the next required step is loop-governance, not implementation.
+If loop/GOVERNANCE.json is absent, report governance pending; never assume older
+installations are exempt. Preserve existing governance records and summaries on
+re-detection. Changed profile/workflow evidence requires reassessment. Planning
+remains available, but orchestration and publication require the executable gate.

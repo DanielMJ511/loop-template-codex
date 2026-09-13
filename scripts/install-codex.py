@@ -16,7 +16,7 @@ def source_files():
     paths += list((SOURCE / ".agents/skills").rglob("SKILL.md"))
     paths += list((SOURCE / ".codex/agents").glob("*.toml"))
     paths += [SOURCE / ".codex/LOOP.md", SOURCE / ".codex/hooks/loop.py", SOURCE / "scripts/check-codex-branch.py"]
-    return sorted(path for path in paths if path.is_file())
+    return sorted(path for path in paths if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc")
 
 
 def check_path(destination, relative):

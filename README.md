@@ -14,7 +14,7 @@ python3 scripts/install-codex.py /path/to/your/project --dry-run
 python3 scripts/install-codex.py /path/to/your/project
 ```
 
-Requires Python 3.11+, Git and POSIX `sh`. The installer checks all file collisions
+Both integrations require Python 3.11+, Git and POSIX `sh`; GitHub governance verification also requires authenticated `gh`. The installer checks all file collisions
 before writing, preserves existing loop state, and merges hook entries without
 replacing unrelated hooks or `config.toml`. Identical files are safe to reinstall;
 different files are reported as conflicts for review. It installs both integrations,
@@ -36,6 +36,7 @@ are loaded. Invoke skills with `$` or the `/skills` selector:
 
 ```text
 $loop-init       detect the project and prepare its profile
+$loop-governance complete the required safeguards assessment
 $loop-plan       discuss and write the next unit's task packets
 $orchestrate     build → test → verify → review → record
 $retro           record lessons from a completed unit
@@ -432,7 +433,7 @@ a shell script has no business making it. That field says so and tells you to ru
 
 ## Changing a hook
 
-The four hooks are the only code in this template; everything else is prose for agents. `tests/`
+The template includes shell hooks, Python adapters, installers and governance tooling alongside agent instructions. `tests/`
 holds the executable checks, and lives outside `.claude/` so it never travels into an adopting
 project:
 
@@ -451,7 +452,7 @@ leftmost: `git stash && git stash list` was refused on Windows and allowed under
 `git stash` past the guard, and no single-twin run could have seen it.
 
 23 cases against `audit-subagent`, in the same shape and for a sharper reason: `loop/AUDIT.log` is
-the record no agent can shape, so a defect there is silent by construction. Both of the ones it has
+an observational record of hook events, not a tamper-proof log, so a defect there is silent by construction. Both of the ones it has
 had shipped past a read-through — the prose scan attributing a T-004 review to T-003 because the
 diff's context named the creating task first, and `docs-writer` acquiring `NO FINDINGS` by quoting
 the auditor verbatim, which the first fix claimed to close and did not. Both are cases in the file.
@@ -609,3 +610,12 @@ registrations, run
 command without `--dry-run`. Customized definitions
 remain conflicts and unrelated hooks are preserved. Review the updated
 registrations in `/hooks`. See [recovery validation](docs/hook-recovery-validation.md).
+
+
+## Required development governance
+
+Both integrations require `loop-governance` after initialization and when its
+evidence changes. Planning can proceed while pending; implementation and
+publication require the executable gate. Existing projects are not automatically
+exempt. See [governance and migration](docs/governance.md),
+[contributing](CONTRIBUTING.md) and [release policy](RELEASING.md).
