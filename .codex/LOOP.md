@@ -10,6 +10,44 @@ the same names (`$loop-init`, `$loop-plan`, `$orchestrate`, `$retro`, `$loop-han
 “Opus escalation” means the configured Codex implementer; Claude model names do
 not select Codex models. The main session keeps the user's model and effort.
 
+## Model cost and user approvals
+
+Use Sol for the builder, implementer, verifier, code reviewer, security auditor,
+docs writer and teacher. The implementer and security auditor use high effort;
+the docs writer uses low; the other Sol roles use medium. The test runner uses
+Luna at low effort. Recommend Sol at medium effort for the main session without
+changing the user's selection. Do not inherit Astra into an unpinned child role.
+
+Keep the source workflow's existing builder retry and critical-review escalation
+rules. Its implementer escalation uses Sol at high effort. When that Sol
+escalation cannot resolve the problem, retain the blocked task and failure history
+instead of restarting the retry ladder. Only then consider an Astra attempt.
+Explain the unresolved problem, what Sol tried, and why Astra might help; ask the
+user and wait for explicit approval before any Astra invocation. Approval applies
+only to the named task and one attempt, not later tasks, retries, audits or resumed
+runs. Record the actual approval and scope in the task packet before proceeding.
+No response means no approval. Missing dependencies, permissions, hooks, models
+or governance evidence are capability failures, not reasons to upgrade models.
+
+An Astra approval does not override the loaded custom agent's pinned model.
+Before an approved attempt, verify that the named implementer can actually run
+the approved model. If reconfiguration and a fresh session are required, report
+that requirement and preserve the handoff; never substitute a generic agent or
+claim a Sol run used Astra. Keep any approved Astra configuration scoped to that
+attempt and restore the Sol default before ordinary work resumes. Preserve audit
+attribution, re-testing, verification and review for the approved attempt. A
+failed Astra attempt returns to blocked status and requires a new user decision.
+
+Security audits run on Sol. An unresolved security concern first requires a
+scoped Sol investigation under the normal task workflow; it does not authorize
+an automatic Astra audit.
+
+The user owns PR acceptance. Preparing changes, passing checks, opening a PR or
+receiving an AI review does not authorize approval, merging or enabling auto-merge.
+Ask for explicit user instruction before those actions, scoped to the specific
+PR; general implementation or publication authorization is insufficient. Continue
+to satisfy governance and repository protections even with user authorization.
+
 ## Start and verify
 
 Linux/WSL prerequisites: Git, POSIX `sh`, Python 3.11+, and a Codex version with

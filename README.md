@@ -51,8 +51,21 @@ defaults, editable in their `.codex/agents/*.toml` definitions:
 | Builder, verifier, code reviewer | `gpt-5.6-sol` | medium |
 | Test runner | `gpt-5.6-luna` | low |
 | Docs writer | `gpt-5.6-sol` | low |
-| Implementer, security auditor | `gpt-6-astra` | high |
-| Teacher | inherited | inherited |
+| Implementer, security auditor | `gpt-5.6-sol` | high |
+| Teacher | `gpt-5.6-sol` | medium |
+
+Sol at medium effort is recommended for the main loop session; the template
+does not change your session selection. Astra is never an automatic escalation:
+only consider it after the Sol implementer cannot resolve the problem, and ask
+the user for explicit approval for each attempt. Keep the task blocked while
+waiting. PR approval and merging also require the user's explicit instruction;
+passing CI or an AI review does not authorize either action. See the
+[model and approval policy](.codex/LOOP.md#model-cost-and-user-approvals).
+
+Existing sessions may retain loaded agent definitions. Start a fresh session and
+verify the configured role models after updating these files. For installations
+in another project, inspect installer conflicts and apply the reviewed changes;
+the installer preserves customized files.
 
 An unavailable model is reported as a blocker, not silently replaced. Claude and
 Codex share `loop/`, so stop one before running the other. The initialization skill
