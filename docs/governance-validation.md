@@ -7,7 +7,7 @@ evidence, changed identity, unresolved gaps, absent approvals, unit and configur
 binding, API outages, solo/team review rules, classic and ruleset protection, and
 publication checks on HEAD. CI runner regressions reject skipped twins, empty
 suites and failed runners. Existing hook-recovery and installer cases remain in
-its suite. 59 Python tests passed locally on Python 3.14.7. Both new skills passed the
+its suite. 60 Python tests passed locally on Python 3.14.7. Both new skills passed the
 skill-creator validator; CI YAML parsed and action references are pinned. Hosted
 Python 3.11/3.14 and shell-twin execution remains pending.
 
@@ -19,10 +19,25 @@ scenarios, not evidence of an external human approving a GitHub PR.
 
 ## Hosted acceptance
 
-Pending bootstrap CI and branch-protection adoption. GitHub rejected the initial
-branch push because the existing OAuth token lacks workflow scope; no PR or
-remote governance changes were created by that attempt. Do not treat this section as
-a successful hosted verification until the observed run and settings are recorded.
+The bootstrap PR is [#1](https://github.com/DanielMJ511/loop-template-codex/pull/1).
+Hosted run [34787380951](https://github.com/DanielMJ511/loop-template-codex/actions/runs/34787380951)
+passed Python 3.11/3.14 and both shell implementations on Ubuntu 24.04 and
+Windows 2022. Both runtimes executed all 39 guard and 23 audit fixtures.
+
+After that run, the repository's main protection was configured and read back:
+PRs required, admin enforcement enabled, CI required bound to GitHub Actions
+(app 15368), up-to-date checks and resolved conversations required, force pushes
+and deletion disabled. A protected merge attempt during the correction's pending
+CI was refused with "the base branch policy prohibits the merge". No bypass or
+auto-merge flag was used.
+
+The live publication gate returned ready=true against the successful bootstrap
+commit and actual GitHub settings. This integration probe found a trailing-slash
+metadata URL defect; the correction has a regression test. Final merge and release
+must wait for required checks on the correction and on the resulting main commit.
+
+The initial workflow push required adding workflow scope through GitHub's normal
+device authorization flow. It was retried only after authorization completed.
 
 ## Limits
 
