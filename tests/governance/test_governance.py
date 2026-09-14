@@ -161,6 +161,11 @@ class Governance(unittest.TestCase):
         self.responses['commits/' + head + '/check-runs?per_page=100'] = self.responses['commits/abc/check-runs?per_page=100']
         self.assertEqual(self.check(phase='publish'), [])
 
+    def test_metadata_endpoint_has_no_trailing_slash(self):
+        with patch.object(g, 'run', return_value='{"default_branch":"main"}') as call:
+            self.assertEqual(g.fetch(self.root, 'owner/project', '', 'gh')['default_branch'], 'main')
+            self.assertEqual(call.call_args.args[0], ['gh', 'api', 'repos/owner/project'])
+
     def test_classic_protection_absent_is_not_api_outage(self):
         with patch.object(g, 'run', side_effect=subprocess.CalledProcessError(1, ['gh'], stderr='Not Found (HTTP 404)')):
             self.assertEqual(g.fetch(self.root, 'owner/project', 'branches/main/protection', 'gh'), {})

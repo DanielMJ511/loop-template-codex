@@ -73,7 +73,7 @@ def read(root):
 
 def fetch(root, repo, endpoint, gh):
     try:
-        return json.loads(run([gh, 'api', 'repos/' + repo + '/' + endpoint], root))
+        return json.loads(run([gh, 'api', 'repos/' + repo + ('/' + endpoint if endpoint else '')], root))
     except subprocess.CalledProcessError as error:
         # A ruleset-only protected branch has no classic protection resource.
         if endpoint.endswith('/protection') and 'HTTP 404' in error.stderr:
