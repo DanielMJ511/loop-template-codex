@@ -21,6 +21,16 @@ hooks:
 
 Run in the main session. Write no feature code directly — every code change goes through `builder` or `implementer`. Never scheduled or backgrounded: this is a single foreground invocation that processes tasks until done or blocked, then returns control to the user.
 
+## Required governance gate
+
+Before activation or any implementation spawn, run `python3 .claude/skills/loop-governance/scripts/governance.py check --unit UNIT`,
+using the actual unit identifier from the plan (omit --unit if none exists).
+A missing validator/record, nonzero exit, or malformed result blocks this run:
+return the blockers and direct the user to /loop-governance. Planning remains
+available. Repeat on every resume and before committing; before any authorized
+push, merge or release use `check --phase publish --unit UNIT` as well. Never
+reuse another invocation's pass or ask a Stop hook to continue on failure.
+
 ## 1. Resume or start
 
 Read `loop/PROFILE.md` (every command below comes from it), `loop/PLAN.md`, and `loop/LESSONS.md`

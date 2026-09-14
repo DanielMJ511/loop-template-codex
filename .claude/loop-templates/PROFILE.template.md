@@ -239,3 +239,11 @@ Things `/loop-init` could not determine, listed so they get resolved rather than
 line when it is answered, and move the answer into the section above where it belongs.
 
 - `<question>`
+
+
+## Required governance
+
+- Assessment: `loop/GOVERNANCE.json`; readable summary: `loop/GOVERNANCE.md`.
+- Required workflow: `loop-governance` after init and when evidence changes.
+- Python 3.11+ is required. Implementation and publication require a successful
+  executable governance check, including any explicitly approved scoped exceptions.

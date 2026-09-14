@@ -11,3 +11,9 @@ Follow the source workflow with these substitutions:
 - Respect Codex Plan mode: when active, explore without writing profile, packets, or probe edits; return the proposed plan. Write the loop artifacts after execution mode is enabled.
 - Write `Unit:`, `Status:`, and `Route:` on separate lines in every packet, rather than the source's combined example header. The hooks parse line-start fields.
 - Before replacing an existing unit, resolve any in-flight tasks with the user and preserve the previous plan and packets in a dated `loop/archive/` directory. Never clear an active unit just because a new request arrived.
+
+
+Planning is allowed while governance is pending. Read loop/GOVERNANCE.json if
+present and surface unresolved controls in the plan; do not label the plan ready
+for implementation until loop-governance's executable check succeeds. Do not
+create approvals or repair governance implicitly as part of task planning.

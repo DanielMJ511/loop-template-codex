@@ -134,3 +134,13 @@ Changed hook definitions require review/trust through `/hooks` before live testi
 For existing installations, `scripts/install-codex.py DEST --migrate-hooks` updates
 only exact legacy hook registrations, preserving unrelated hooks and customized
 conflicts. Inspect the dry run first. It does not upgrade customized adapter files.
+
+
+## Required governance
+
+Run `$loop-governance` after initialization. The shared executable check in
+`.claude/skills/loop-governance/scripts/governance.py` is required before
+implementation/resume/commit and with `--phase publish` before publication.
+Python 3.11+ applies to Claude and Codex. Preserve governance state during
+re-detection; missing or stale records are pending. Planning and authorized
+setup remediation remain available. Do not use Stop hooks to enforce this gate.
